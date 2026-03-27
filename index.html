@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Arthur's Christening — details, venue and RSVP"><!-- EDIT -->
+  <title>Arthur's Christening</title><!-- EDIT -->
+
+  <!--
+  ═══════════════════════════════════════════════════════
+  ARTHUR'S CHRISTENING WEBSITE
+  ═══════════════════════════════════════════════════════
+
+  DEPLOYING TO GITHUB PAGES
+  ─────────────────────────
+  1. Create a new (private) repo at github.com
+     e.g. "arthurs-christening"
+  2. Rename this file to index.html and upload it
+  3. Settings → Pages → Source: Deploy from branch
+     → branch: main → folder: / (root) → Save
+  4. Live at: yourusername.github.io/arthurs-christening
+  5. To update: just re-upload index.html — live within ~60s
+
+  FILLING IN YOUR DETAILS
+  ───────────────────────
+  Search for <!-- EDIT --> comments — every placeholder is marked.
+
+  RSVP SETUP (Google Form → Sheet → Email alerts)
+  ─────────────────────────────────────────────────
+  Step 1: forms.google.com → blank form
+  Step 2: Add questions:
+          • "Your name" (Short answer, required)
+          • "Names of everyone in your party" (Paragraph, required)
+          • "Attending?" (Multiple choice: Yes, full day /
+            Ceremony only / Sadly can't make it)
+          • "Dietary requirements or allergies" (Paragraph)
+  Step 3: Responses tab → green Sheets icon → Create new sheet
+          Share this sheet link with family so everyone can see RSVPs
+  Step 4: Responses tab → ⋮ → Get email notifications for new responses
+  Step 5: Send → Copy link → grab the ID between /d/e/ and /viewform
+          e.g. https://docs.google.com/forms/d/e/XXXXXX/viewform
+                                                    ↑ this bit
+  Step 6: Paste into the iframe src below (replacing YOUR_FORM_ID)
+          Then delete the form-placeholder div
+  ═══════════════════════════════════════════════════════
+  -->
+
+  <style>
+    /* ── RESET ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 18px; }
+
+    /*
+      FONTS: 100% system fonts — zero network requests, loads instantly,
+      renders perfectly on every device including old iOS and Android.
+      Georgia for body text (elegant, universally available, large x-height
+      makes it easy to read on small/old screens).
+    */
+    body {
+      background: #FAF6EF;
+      color: #2B3620;
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      line-height: 1.75;
+    }
+
+    /* ── COLOUR VARIABLES ────────────────────────────── */
+    :root {
+      --cream:      #FAF6EF;
+      --cream-mid:  #EDE5D3;
+      --ink:        #2B3620;
+      --ink-mid:    #4A5C3D;
+      --gold:       #A8782E;
+      --gold-lt:    #C89A50;
+      --sage:       #6B8F72;
+      --sage-lt:    #9DC4A3;
+      --white:      #FFFDF8;
+      --border:     #DCCFB8;
+      --sans:       -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+
+    img { display: block; max-width: 100%; }
+    a { color: inherit; }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #FAF6EF; /* solid — no backdrop-filter, old browsers don't support it */
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      min-height: 52px;
+      padding: 0 0.5rem;
+    }
+
+    nav a {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      text-decoration: none;
+      padding: 15px 14px; /* tall tap target — important on older touch screens */
+      display: block;
+      transition: color 0.15s;
+    }
+
+    nav a:hover { color: var(--gold); }
+
+    /* ── HERO ────────────────────────────────────────── */
+    #hero {
+      background: var(--ink);
+      color: var(--cream);
+      text-align: center;
+      padding: 5rem 1.5rem 4.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ambient colour — pure CSS, no images */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 60%, rgba(107,143,114,0.20) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 20%, rgba(168,120,46,0.14) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-inner { position: relative; max-width: 680px; margin: 0 auto; }
+
+    .eyebrow {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--sage-lt);
+      display: block;
+      margin-bottom: 1.25rem;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 7vw, 4rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--cream);
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-name {
+      font-size: clamp(3.5rem, 14vw, 7rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--gold-lt);
+      line-height: 1.05;
+      margin-bottom: 2rem;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      margin: 2rem auto;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      display: block;
+      height: 1px;
+      width: 72px;
+      background: var(--gold-lt);
+      opacity: 0.45;
+    }
+
+    .divider-gem {
+      width: 8px;
+      height: 8px;
+      background: var(--gold-lt);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    .hero-date {
+      font-size: clamp(1.05rem, 3vw, 1.3rem);
+      color: #C5BCA8;
+      letter-spacing: 0.04em;
+    }
+
+    .hero-place {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--sage-lt);
+      margin-top: 0.6rem;
+    }
+
+    /* ── LAYOUT ──────────────────────────────────────── */
+    section { padding: 3.5rem 1.25rem; }
+
+    @media (min-width: 600px) { section { padding: 5rem 2rem; } }
+
+    .wrap    { max-width: 860px; margin: 0 auto; }
+    .wrap-sm { max-width: 640px; margin: 0 auto; }
+
+    .section-label {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--sage);
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+
+    h2 {
+      font-size: clamp(1.9rem, 5vw, 2.75rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 1.25rem;
+    }
+
+    h2 em { font-style: italic; color: var(--gold); }
+
+    .rule {
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: var(--gold);
+      margin-bottom: 2rem;
+    }
+
+    .rule.center { margin-left: auto; margin-right: auto; }
+
+    .band { background: var(--white); }
+
+    /* ── TIMELINE ────────────────────────────────────── */
+    .timeline { display: flex; flex-direction: column; }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 68px 1px 1fr;
+      gap: 0 1.25rem;
+      padding-bottom: 2.25rem;
+    }
+
+    .tl-item:last-child { padding-bottom: 0; }
+
+    .tl-time {
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--gold);
+      text-align: right;
+      padding-top: 0.1rem;
+      line-height: 1.35;
+    }
+
+    .tl-spine {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tl-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+      margin-top: 0.3rem;
+    }
+
+    .tl-line {
+      width: 1px;
+      flex: 1;
+      background: var(--gold-lt);
+      opacity: 0.3;
+      margin-top: 5px;
+    }
+
+    .tl-item:last-child .tl-line { display: none; }
+
+    .tl-body h3 {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+
+    .tl-body p {
+      font-size: 0.9rem;
+      color: var(--ink-mid);
+    }
+
+    /* ── VENUE CARDS ─────────────────────────────────── */
+    .venue-grid {
+      display: grid;
+      gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+
+    @media (min-width: 580px) {
+      .venue-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .venue-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+    }
+
+    .venue-card h3 {
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 0.4rem;
+    }
+
+    .venue-card .addr {
+      font-family: var(--sans);
+      font-size: 13px;
+      color: var(--sage);
+      line-height: 1.65;
+      margin-bottom: 0.85rem;
+    }
+
+    .venue-card .notes {
+      font-size: 0.9rem;
+      color: var(--ink-mid);
+    }
+
+    /* Map link: oversized tap target, clearly tappable */
+    .map-link {
+      display: inline-block;
+      margin-top: 1.25rem;
+      padding: 0.7rem 1.35rem;
+      background: var(--cream-mid);
+      border: 1px solid #C9B48A;
+      border-radius: 100px;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+
+    .map-link:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
+
+    /* ── TRANSPORT ───────────────────────────────────── */
+    .transport-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    @media (min-width: 480px) { .transport-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 760px) { .transport-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .transport-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.35rem 1.5rem;
+    }
+
+    .transport-card h4 {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .transport-card p {
+      font-size: 0.88rem;
+      color: var(--ink-mid);
+    }
+
+    /* ── ACCOMMODATION ───────────────────────────────── */
+    .accom-list {
+      margin-top: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .accom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.1rem 1.35rem;
+      background: var(--white);
+      border-bottom: 1px solid #EDE5D5;
+    }
+
+    .accom-row:last-child { border-bottom: none; }
+
+    .accom-name {
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 0.15rem;
+    }
+
+    .accom-note {
+      font-family: var(--sans);
+      font-size: 12px;
+      color: var(--sage);
+    }
+
+    .accom-dist {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold-lt);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── RSVP SECTION ────────────────────────────────── */
+    #rsvp {
+      background: var(--ink);
+    }
+
+    #rsvp .section-label { color: var(--sage-lt); }
+    #rsvp h2             { color: var(--cream); }
+    #rsvp .rule          { background: var(--gold-lt); }
+
+    .rsvp-lede {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #C0B8A4;
+      margin-bottom: 2.5rem;
+      line-height: 1.75;
+    }
+
+    .form-shell {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .form-shell iframe {
+      display: block;
+      width: 100%;
+      border: none;
+      min-height: 620px;
+      background: #fff;
+    }
+
+    .form-placeholder {
+      padding: 4rem 2rem;
+      text-align: center;
+      color: rgba(255,255,255,0.28);
+      font-size: 0.9rem;
+      line-height: 1.9;
+      font-style: italic;
+    }
+
+    .rsvp-fallback {
+      font-family: var(--sans);
+      font-size: 13px;
+      text-align: center;
+      color: rgba(255,255,255,0.35);
+      margin-top: 1.5rem;
+    }
+
+    .rsvp-fallback a { color: var(--sage-lt); }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+      background: #1D2213;
+      color: rgba(255,255,255,0.38);
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .footer-monogram {
+      font-size: 2.5rem;
+      font-style: italic;
+      color: var(--gold-lt);
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    footer p {
+      font-family: var(--sans);
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    /* ── FOCUS (accessibility) ───────────────────────── */
+    a:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#the-day">The Day</a>
+    <a href="#venues">Venues</a>
+    <a href="#travel">Getting Here</a>
+    <a href="#rsvp">RSVP</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-inner">
+      <span class="eyebrow">You are warmly invited to celebrate</span>
+      <h1>The Christening of</h1>
+      <p class="hero-name">Arthur</p><!-- EDIT: add surname / middle name if preferred -->
+      <div class="divider"><div class="divider-gem"></div></div>
+      <p class="hero-date">[Day], [Date] &middot; [Year]</p><!-- EDIT: e.g. Saturday, 19th July &middot; 2025 -->
+      <p class="hero-place">[Town], [County]</p><!-- EDIT: e.g. Burford, Oxfordshire -->
+    </div>
+  </section>
+
+  <!-- THE DAY -->
+  <section id="the-day" class="band">
+    <div class="wrap-sm">
+      <span class="section-label">Schedule</span>
+      <h2>The <em>Day</em></h2>
+      <span class="rule"></span>
+      <p style="margin-bottom:3rem; color:var(--ink-mid);">
+        We'd love you to join us for the whole day &mdash; but please come for whatever
+        part you can make. Just let us know in your RSVP.
+      </p><!-- EDIT: adjust as you like -->
+
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-time">11:00</div><!-- EDIT -->
+          <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-body">
+            <h3>Christening Service</h3>
+            <p>[Church Name]. Guests are very welcome from [10:45].</p><!-- EDIT -->
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">12:30</div><!-- EDIT -->
+          <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-body">
+            <h3>Drinks &amp; Celebration</h3>
+            <p>Join us at [venue / our home] for lunch, drinks and cake.</p><!-- EDIT -->
+          </div>
+        </div>
+
+        <div class="tl-item"><!-- EDIT or delete this block if no evening element -->
+          <div class="tl-time">Evening</div>
+          <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-body">
+            <h3>Evening</h3>
+            <p>Those who'd like to stay on are very welcome into the evening.</p><!-- EDIT -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- VENUES -->
+  <section id="venues">
+    <div class="wrap">
+      <span class="section-label">Where</span>
+      <h2>Church &amp; <em>Celebration</em></h2>
+      <span class="rule"></span>
+
+      <div class="venue-grid">
+
+        <div class="venue-card">
+          <h3>[Church Name]</h3><!-- EDIT -->
+          <p class="addr">[Street]<br>[Town], [County]<br>[Postcode]</p><!-- EDIT -->
+          <p class="notes">[Notes: parking, arrival time, dress code, children welcome etc.]</p><!-- EDIT -->
+          <a class="map-link"
+             href="https://maps.google.com/?q=[CHURCH+POSTCODE]"
+             target="_blank" rel="noopener noreferrer">
+            <!-- EDIT: replace [CHURCH+POSTCODE] with actual postcode, e.g. OX18+4SD -->
+            Open in Google Maps
+          </a>
+        </div>
+
+        <div class="venue-card">
+          <h3>[Celebration Venue]</h3><!-- EDIT: e.g. "The Garden Room" or "Our home" -->
+          <p class="addr">[Street]<br>[Town], [County]<br>[Postcode]</p><!-- EDIT -->
+          <p class="notes">[Notes: parking, what to expect, children welcome, access etc.]</p><!-- EDIT -->
+          <a class="map-link"
+             href="https://maps.google.com/?q=[VENUE+POSTCODE]"
+             target="_blank" rel="noopener noreferrer">
+            <!-- EDIT: replace [VENUE+POSTCODE] with actual postcode -->
+            Open in Google Maps
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAVEL & ACCOMMODATION -->
+  <section id="travel" class="band">
+    <div class="wrap">
+      <span class="section-label">Getting Here &amp; Staying Over</span>
+      <h2>Travel &amp; <em>Accommodation</em></h2>
+      <span class="rule"></span>
+
+      <p style="color:var(--ink-mid); max-width:580px; margin-bottom:2.5rem;">
+        [Brief intro — e.g. "The village is easy to reach by road or rail.
+        If you're coming from afar there are some lovely places to stay."]
+      </p><!-- EDIT -->
+
+      <div class="transport-grid">
+        <div class="transport-card">
+          <h4>By Car</h4>
+          <p>[Directions from nearest motorway / A-road. Parking at each venue.]</p><!-- EDIT -->
+        </div>
+        <div class="transport-card">
+          <h4>By Train</h4>
+          <p>[Nearest station, distance, taxi firms or pickup arrangements.]</p><!-- EDIT -->
+        </div>
+        <div class="transport-card">
+          <h4>Taxis</h4>
+          <p>[Local firm names and numbers. Uber availability. Any planned minibus.]</p><!-- EDIT -->
+        </div>
+      </div>
+
+      <h2 style="margin-top:3.5rem; font-size:clamp(1.5rem, 4vw, 2rem);">Places to <em>Stay</em></h2>
+      <span class="rule"></span>
+      <p style="color:var(--ink-mid); margin-bottom:0;">
+        We recommend booking early — particularly if you'd like to arrive the night before.
+      </p><!-- EDIT -->
+
+      <div class="accom-list">
+        <!-- EDIT: Add/remove/adjust rows as needed -->
+        <div class="accom-row">
+          <div>
+            <div class="accom-name">[Hotel or B&amp;B Name]</div>
+            <div class="accom-note">[Style, price range, website if useful]</div>
+          </div>
+          <div class="accom-dist">[X] miles</div>
+        </div>
+        <div class="accom-row">
+          <div>
+            <div class="accom-name">[Hotel or B&amp;B Name]</div>
+            <div class="accom-note">[Style, price range, website if useful]</div>
+          </div>
+          <div class="accom-dist">[X] miles</div>
+        </div>
+        <div class="accom-row">
+          <div>
+            <div class="accom-name">[Hotel or B&amp;B Name]</div>
+            <div class="accom-note">[Style, price range, website if useful]</div>
+          </div>
+          <div class="accom-dist">[X] miles</div>
+        </div>
+        <div class="accom-row">
+          <div>
+            <div class="accom-name">Self-catering cottages</div>
+            <div class="accom-note">Several options on Sykes Cottages and Airbnb — great for families</div>
+          </div>
+          <div class="accom-dist">Various</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section id="rsvp">
+    <div class="wrap-sm" style="text-align:center;">
+      <span class="section-label">Kindly respond by [Date]</span><!-- EDIT: RSVP deadline -->
+      <h2>Please <em>RSVP</em></h2>
+      <span class="rule center"></span>
+
+      <p class="rsvp-lede">
+        We'd be so delighted to have you with us. Please fill in the short form
+        below so we can look after you properly on the day.
+      </p><!-- EDIT: personalise -->
+
+      <div class="form-shell">
+
+        <!--
+          Once you have your Form ID (see setup instructions above):
+          1. Delete the form-placeholder div below
+          2. Uncomment the iframe block and paste in your ID
+        -->
+
+        <!-- UNCOMMENT AND EDIT ONCE FORM IS READY:
+        <iframe
+          src="https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true"
+          title="RSVP for Arthur's Christening"
+          loading="lazy">
+          Loading&hellip;
+        </iframe>
+        -->
+
+        <!-- DELETE THIS BLOCK ONCE FORM IS ADDED: -->
+        <div class="form-placeholder">
+          Your RSVP form will appear here.<br>
+          Follow the setup guide in the HTML comments above.
+        </div>
+
+      </div>
+
+      <p class="rsvp-fallback">
+        Trouble with the form? Email us:
+        <a href="mailto:YOUR@EMAIL.COM">your@email.com</a>
+        <!-- EDIT: your email -->
+      </p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-monogram">A</span><!-- EDIT: monogram / initials -->
+    <p>Arthur's Christening &middot; [Month Year]</p><!-- EDIT -->
+    <p style="margin-top:0.4rem; opacity:0.55;">With love, [Parent names]</p><!-- EDIT -->
+  </footer>
+
+  <script>
+    /*
+      Minimal JS: highlight the active nav section as you scroll.
+      Falls back gracefully on browsers without IntersectionObserver —
+      those just get a static nav, which is perfectly fine.
+    */
+    (function () {
+      if (!('IntersectionObserver' in window)) return;
+      var links = document.querySelectorAll('nav a');
+      var sections = document.querySelectorAll('section[id]');
+      var goldColour = '#A8782E';
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            links.forEach(function (a) {
+              a.style.color = (a.getAttribute('href') === '#' + entry.target.id)
+                ? goldColour : '';
+            });
+          }
+        });
+      }, { threshold: 0.35 });
+
+      sections.forEach(function (s) { io.observe(s); });
+    }());
+  </script>
+
+</body>
+</html>
